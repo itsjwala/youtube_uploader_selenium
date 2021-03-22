@@ -1,44 +1,19 @@
 name: Raise PR when diff in upstream master
 
 on:
-  workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'
-  
-jobs:
-  createPullRequest:
-    runs-on: ubuntu-latest
-    steps:
-    
-      - name: Checkout master
-        uses: actions/checkout@v2
-        with:
-          ref: master
-          
-      - name: add remote upstream
-        run: |
-          git remote add upstream https://github.com/linouk23/youtube_uploader_selenium.git
-          git fetch --unshallow -p upstream
-          
-      - name: Create Pull Request
-        id: cpr
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: Diff from upstream $(date +%D)
-          committer: GitHub <noreply@github.com>
-          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          signoff: false
-          branch: upstream-diff
-          delete-branch: true
-          title: 'Diff from upstream'
-          body: |
-            Diff from upstream master
-          assignees: itsjwala
-          reviewers: itsjwala
-          draft: false
+  workflow_dispatch: # on button click
 
-      - name: Check outputs
-        run: |
-          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
-          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+jobs:
+  sync:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: tgymnich/fork-sync@v1.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          owner: itsjwala
+          base: master
+          head: master
