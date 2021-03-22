@@ -1,0 +1,38 @@
+jobs:
+  createPullRequest:
+    runs-on: ubuntu-latest
+    steps:
+    
+      - name: Checkout master
+        uses: actions/checkout@v2
+        with:
+          ref: master
+          
+      - name: add remote upstream
+        run:
+          git remote add upstream https://github.com/linouk23/youtube_uploader_selenium.git
+          git checkout -b upstream-diff
+          git pull upstream master
+          
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.PAT }}
+          commit-message: Diff from upstream $(date +%D)
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          signoff: false
+          branch: upstream-diff
+          delete-branch: true
+          title: 'Diff from upstream'
+          body: |
+            Diff from upstream master
+          assignees: itsjwala
+          reviewers: itsjwala
+          draft: false
+
+      - name: Check outputs
+        run: |
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
