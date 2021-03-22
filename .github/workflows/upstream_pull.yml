@@ -1,0 +1,38 @@
+name: Raise PR when diff in upstream master
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+    
+jobs:
+  updateFork:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+          
+      - name: Reset the default branch with upstream changes
+        run: |
+          git remote add upstream https://github.com/linouk23/youtube_uploader_selenium.git
+          git fetch upstream master:upstream-master
+          git reset --hard upstream-master
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.PAT }}
+          commit-message: Diff from upstream $(date +%D)
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          signoff: false
+          branch: upstream-changes
+          delete-branch: true
+          title: 'Diff from upstream'
+          body: |
+            Diff from upstream master
+          assignees: itsjwala
+          reviewers: itsjwala
+          draft: false
+      - name: Check outputs
+        run: |
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
