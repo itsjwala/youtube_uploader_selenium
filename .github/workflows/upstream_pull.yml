@@ -19,7 +19,7 @@ jobs:
         run: |
           git remote add upstream https://github.com/linouk23/youtube_uploader_selenium.git
           git checkout -b upstream-diff
-          git pull upstream master
+          git fetch --unshallow -p upstream
           
       - name: Create Pull Request
         id: cpr
