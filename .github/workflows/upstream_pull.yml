@@ -16,7 +16,7 @@ jobs:
           ref: master
           
       - name: add remote upstream
-        run:
+        run: |
           git remote add upstream https://github.com/linouk23/youtube_uploader_selenium.git
           git checkout -b upstream-diff
           git pull upstream master
