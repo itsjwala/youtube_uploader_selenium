@@ -2,10 +2,13 @@
     to extract its title, description etc."""
 
 from typing import DefaultDict, Optional
-from selenium_firefox.firefox import Firefox, By, Keys
+from selenium_firefox.firefox import Firefox
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from collections import defaultdict
 import json
 import time
+from datetime import datetime
 from .Constant import *
 from pathlib import Path
 import logging
@@ -30,8 +33,8 @@ class YouTubeUploader:
         self.video_path = video_path
         self.thumbnail_path = thumbnail_path
         self.metadata_dict = load_metadata(metadata_json_path)
-        current_working_dir = str(Path.cwd())
-        self.browser = Firefox(current_working_dir, current_working_dir,headless=True)
+        self.current_working_dir = str(Path.cwd())
+        self.browser = Firefox(self.current_working_dir, self.current_working_dir, headless=True, geckodriver_path="/usr/local/bin/geckodriver")
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
         self.__validate_inputs()
@@ -61,24 +64,31 @@ class YouTubeUploader:
             self.browser.load_cookies()
             time.sleep(Constant.USER_WAITING_TIME)
             self.browser.refresh()
-        else:
-            self.logger.debug('Couldnt find cookies. attempting login via automation')
-            self.logger.debug('Clicking sign in button on top right corner')
-            self.browser.find(By.XPATH, Constant.YOUTUBE_SIGNIN_BUTTON).click()
             time.sleep(Constant.USER_WAITING_TIME)
-            self.logger.debug('Attempting to fill email')
-            self.browser.find(By.XPATH,Constant.GOOGLE_SIGNIN_CARD_EMAIL).send_keys(os.getenv("YOUTUBE_USER_EMAIL"))
-            time.sleep(Constant.USER_WAITING_TIME)
-            self.logger.debug('Attempting to click next')
-            self.browser.find(By.XPATH, Constant.GOOGLE_SIGNIN_CARD_EMAIL_NEXT).click()
-            time.sleep(Constant.USER_WAITING_TIME)
-            self.logger.debug('Attempting to fill password')
-            self.browser.find(By.XPATH, Constant.GOOGLE_SIGNIN_CARD_PASSWORD ).send_keys(os.getenv("YOUTUBE_USER_PASS"))
-            time.sleep(Constant.USER_WAITING_TIME)
-            self.logger.debug('Attempting to go all in !')
-            self.browser.find(By.XPATH, Constant.GOOGLE_SIGNIN_CARD_PASSWORD_NEXT).click()
-            time.sleep(Constant.USER_WAITING_TIME)
-            self.browser.save_cookies()
+            self.logger.debug(self.browser.find(By.XPATH, Constant.YOUTUBE_SIGNIN_BUTTON))
+            if not self.browser.find(By.XPATH, Constant.YOUTUBE_SIGNIN_BUTTON):
+                return
+        
+        cookie_path = f"{self.current_working_dir}/youtube.com.json"
+        os.remove(cookie_path) if os.path.exists(cookie_path) else None
+
+        self.logger.debug('Couldnt find cookies. attempting login via automation')
+        self.logger.debug('Clicking sign in button on top right corner')
+        self.browser.find(By.XPATH, Constant.YOUTUBE_SIGNIN_BUTTON).click()
+        time.sleep(Constant.USER_WAITING_TIME)
+        self.logger.debug('Attempting to fill email')
+        self.browser.find(By.XPATH,Constant.GOOGLE_SIGNIN_CARD_EMAIL).send_keys(os.getenv("YOUTUBE_USER_EMAIL"))
+        time.sleep(Constant.USER_WAITING_TIME)
+        self.logger.debug('Attempting to click next')
+        self.browser.find(By.XPATH, Constant.GOOGLE_SIGNIN_CARD_EMAIL_NEXT).click()
+        time.sleep(Constant.USER_WAITING_TIME)
+        self.logger.debug('Attempting to fill password')
+        self.browser.find(By.XPATH, Constant.GOOGLE_SIGNIN_CARD_PASSWORD ).send_keys(os.getenv("YOUTUBE_USER_PASS"))
+        time.sleep(Constant.USER_WAITING_TIME)
+        self.logger.debug('Attempting to go all in !')
+        self.browser.find(By.XPATH, Constant.GOOGLE_SIGNIN_CARD_PASSWORD_NEXT).click()
+        time.sleep(Constant.USER_WAITING_TIME)
+        self.browser.save_cookies()
 
     def __write_in_field(self, field, string, select_all=False):
         field.click()
