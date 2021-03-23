@@ -1,5 +1,12 @@
 class Constant:
     """A class for storing constants for YoutubeUploader class"""
+    
+    YOUTUBE_SIGNIN_BUTTON = '//*[@id="buttons"]/ytd-button-renderer/a'
+    GOOGLE_SIGNIN_CARD_EMAIL = '//*[@id="identifierId"]'
+    GOOGLE_SIGNIN_CARD_EMAIL_NEXT = '//*[@id="identifierNext"]/div/button'
+    GOOGLE_SIGNIN_CARD_PASSWORD = '//*[@id="password"]/div[1]/div/div[1]/input'
+    GOOGLE_SIGNIN_CARD_PASSWORD_NEXT = '//*[@id="passwordNext"]/div/button'
+
     YOUTUBE_URL = 'https://www.youtube.com'
     YOUTUBE_STUDIO_URL = 'https://studio.youtube.com'
     YOUTUBE_UPLOAD_URL = 'https://www.youtube.com/upload'
@@ -20,6 +27,7 @@ class Constant:
     TAGS_INPUT = 'text-input'
     NEXT_BUTTON = 'next-button'
     PUBLIC_BUTTON = 'PUBLIC'
+    PRIVATE_BUTTON = 'PRIVATE'
     VIDEO_URL_CONTAINER = "//span[@class='video-url-fadeable style-scope ytcp-video-info']"
     VIDEO_URL_ELEMENT = "//a[@class='style-scope ytcp-video-info']"
     HREF = 'href'

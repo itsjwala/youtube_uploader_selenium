@@ -9,8 +9,10 @@ import time
 from .Constant import *
 from pathlib import Path
 import logging
+import os
 
 logging.basicConfig()
+
 
 
 def load_metadata(metadata_json_path: Optional[str] = None) -> DefaultDict[str, str]:
@@ -29,7 +31,7 @@ class YouTubeUploader:
         self.thumbnail_path = thumbnail_path
         self.metadata_dict = load_metadata(metadata_json_path)
         current_working_dir = str(Path.cwd())
-        self.browser = Firefox(current_working_dir, current_working_dir)
+        self.browser = Firefox(current_working_dir, current_working_dir,headless=True)
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
         self.__validate_inputs()
@@ -60,9 +62,21 @@ class YouTubeUploader:
             time.sleep(Constant.USER_WAITING_TIME)
             self.browser.refresh()
         else:
-            self.logger.info('Please sign in and then press enter')
-            input()
-            self.browser.get(Constant.YOUTUBE_URL)
+            self.logger.debug('Couldnt find cookies. attempting login via automation')
+            self.logger.debug('Clicking sign in button on top right corner')
+            self.browser.find(By.XPATH, Constant.YOUTUBE_SIGNIN_BUTTON).click()
+            time.sleep(Constant.USER_WAITING_TIME)
+            self.logger.debug('Attempting to fill email')
+            self.browser.find(By.XPATH,Constant.GOOGLE_SIGNIN_CARD_EMAIL).send_keys(os.getenv("YOUTUBE_USER_EMAIL"))
+            time.sleep(Constant.USER_WAITING_TIME)
+            self.logger.debug('Attempting to click next')
+            self.browser.find(By.XPATH, Constant.GOOGLE_SIGNIN_CARD_EMAIL_NEXT).click()
+            time.sleep(Constant.USER_WAITING_TIME)
+            self.logger.debug('Attempting to fill password')
+            self.browser.find(By.XPATH, Constant.GOOGLE_SIGNIN_CARD_PASSWORD ).send_keys(os.getenv("YOUTUBE_USER_PASS"))
+            time.sleep(Constant.USER_WAITING_TIME)
+            self.logger.debug('Attempting to go all in !')
+            self.browser.find(By.XPATH, Constant.GOOGLE_SIGNIN_CARD_PASSWORD_NEXT).click()
             time.sleep(Constant.USER_WAITING_TIME)
             self.browser.save_cookies()
 
@@ -124,9 +138,9 @@ class YouTubeUploader:
         self.browser.find(By.ID, Constant.NEXT_BUTTON).click()
         self.logger.debug('Clicked another {}'.format(Constant.NEXT_BUTTON))
 
-        public_main_button = self.browser.find(By.NAME, Constant.PUBLIC_BUTTON)
+        public_main_button = self.browser.find(By.NAME, Constant.PRIVATE_BUTTON)
         self.browser.find(By.ID, Constant.RADIO_LABEL, public_main_button).click()
-        self.logger.debug('Made the video {}'.format(Constant.PUBLIC_BUTTON))
+        self.logger.debug('Made the video {}'.format(Constant.PRIVATE_BUTTON))
 
         video_id = self.__get_video_id()
 
