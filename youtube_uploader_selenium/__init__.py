@@ -94,6 +94,7 @@ class YouTubeUploader:
         self.browser.driver.get_screenshot_as_file('/tmp/ss5')
         self.browser.find(By.XPATH, Constant.GOOGLE_SIGNIN_CARD_PASSWORD_NEXT).click()
         time.sleep(Constant.USER_WAITING_TIME)
+        self.browser.driver.get_screenshot_as_file('/tmp/ss6')
         self.browser.save_cookies()
 
     def __write_in_field(self, field, string, select_all=False):
