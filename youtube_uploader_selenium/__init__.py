@@ -14,7 +14,7 @@ from pathlib import Path
 import logging
 import os
 
-logging.basicConfig()
+logging.basicConfig(stream=sys.stdout)
 
 
 
@@ -74,18 +74,23 @@ class YouTubeUploader:
 
         self.logger.debug('Couldnt find cookies. attempting login via automation')
         self.logger.debug('Clicking sign in button on top right corner')
+        self.browser.driver.get_screenshot_as_file('/tmp/ss1')
         self.browser.find(By.XPATH, Constant.YOUTUBE_SIGNIN_BUTTON).click()
         time.sleep(Constant.USER_WAITING_TIME)
         self.logger.debug('Attempting to fill email')
+        self.browser.driver.get_screenshot_as_file('/tmp/ss2')
         self.browser.find(By.XPATH,Constant.GOOGLE_SIGNIN_CARD_EMAIL).send_keys(os.getenv("YOUTUBE_USER_EMAIL"))
         time.sleep(Constant.USER_WAITING_TIME)
         self.logger.debug('Attempting to click next')
+        self.browser.driver.get_screenshot_as_file('/tmp/ss3')
         self.browser.find(By.XPATH, Constant.GOOGLE_SIGNIN_CARD_EMAIL_NEXT).click()
         time.sleep(Constant.USER_WAITING_TIME)
         self.logger.debug('Attempting to fill password')
+        self.browser.driver.get_screenshot_as_file('/tmp/ss4')
         self.browser.find(By.XPATH, Constant.GOOGLE_SIGNIN_CARD_PASSWORD ).send_keys(os.getenv("YOUTUBE_USER_PASS"))
         time.sleep(Constant.USER_WAITING_TIME)
         self.logger.debug('Attempting to go all in !')
+        self.browser.driver.get_screenshot_as_file('/tmp/ss5')
         self.browser.find(By.XPATH, Constant.GOOGLE_SIGNIN_CARD_PASSWORD_NEXT).click()
         time.sleep(Constant.USER_WAITING_TIME)
         self.browser.save_cookies()
@@ -163,6 +168,8 @@ class YouTubeUploader:
                 time.sleep(Constant.USER_WAITING_TIME)
             else:
                 break
+        
+        self.logger.debug('Video uploaded with video_id = {}'.format(video_id))
 
         # done_button = self.browser.find(By.ID, Constant.DONE_BUTTON)
 
