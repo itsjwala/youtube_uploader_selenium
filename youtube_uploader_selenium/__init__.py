@@ -132,25 +132,26 @@ class YouTubeUploader:
         self.logger.debug('Selected \"{}\"'.format(Constant.NOT_MADE_FOR_KIDS_LABEL))
 
         # Advanced options
-        self.browser.find(By.XPATH, Constant.MORE_BUTTON).click()
-        self.logger.debug('Clicked MORE OPTIONS')
 
-        tags_container = self.browser.find(By.XPATH,
-                                                    Constant.TAGS_INPUT_CONTAINER)
-        tags_field = self.browser.find(By.ID, Constant.TAGS_INPUT, element=tags_container)
-        self.__write_in_field(tags_field, ','.join(self.metadata_dict[Constant.VIDEO_TAGS]))
-        self.logger.debug(
-            'The tags were set to \"{}\"'.format(self.metadata_dict[Constant.VIDEO_TAGS]))
+        # self.browser.find(By.XPATH, Constant.MORE_BUTTON).click()
+        # self.logger.debug('Clicked MORE OPTIONS')
 
-        self.browser.find(By.ID, Constant.NEXT_BUTTON).click()
-        self.logger.debug('Clicked {}'.format(Constant.NEXT_BUTTON))
+        # tags_container = self.browser.find(By.XPATH,
+        #                                             Constant.TAGS_INPUT_CONTAINER)
+        # tags_field = self.browser.find(By.ID, Constant.TAGS_INPUT, element=tags_container)
+        # self.__write_in_field(tags_field, ','.join(self.metadata_dict[Constant.VIDEO_TAGS]))
+        # self.logger.debug(
+        #     'The tags were set to \"{}\"'.format(self.metadata_dict[Constant.VIDEO_TAGS]))
 
-        self.browser.find(By.ID, Constant.NEXT_BUTTON).click()
-        self.logger.debug('Clicked another {}'.format(Constant.NEXT_BUTTON))
+        # self.browser.find(By.ID, Constant.NEXT_BUTTON).click()
+        # self.logger.debug('Clicked {}'.format(Constant.NEXT_BUTTON))
 
-        public_main_button = self.browser.find(By.NAME, Constant.PRIVATE_BUTTON)
-        self.browser.find(By.ID, Constant.RADIO_LABEL, public_main_button).click()
-        self.logger.debug('Made the video {}'.format(Constant.PRIVATE_BUTTON))
+        # self.browser.find(By.ID, Constant.NEXT_BUTTON).click()
+        # self.logger.debug('Clicked another {}'.format(Constant.NEXT_BUTTON))
+
+        # public_main_button = self.browser.find(By.NAME, Constant.PRIVATE_BUTTON)
+        # self.browser.find(By.ID, Constant.RADIO_LABEL, public_main_button).click()
+        # self.logger.debug('Made the video {}'.format(Constant.PRIVATE_BUTTON))
 
         video_id = self.__get_video_id()
 
