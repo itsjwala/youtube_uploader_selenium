@@ -164,19 +164,19 @@ class YouTubeUploader:
             else:
                 break
 
-        done_button = self.browser.find(By.ID, Constant.DONE_BUTTON)
+        # done_button = self.browser.find(By.ID, Constant.DONE_BUTTON)
 
         # Catch such error as
         # "File is a duplicate of a video you have already uploaded"
-        if done_button.get_attribute('aria-disabled') == 'true':
-            error_message = self.browser.find(By.XPATH,
-                                              Constant.ERROR_CONTAINER).text
-            self.logger.error(error_message)
-            return False, None
+        # if done_button.get_attribute('aria-disabled') == 'true':
+        #     error_message = self.browser.find(By.XPATH,
+        #                                       Constant.ERROR_CONTAINER).text
+        #     self.logger.error(error_message)
+        #     return False, None
 
-        done_button.click()
-        self.logger.debug("Published the video with video_id = {}".format(video_id))
-        time.sleep(Constant.USER_WAITING_TIME)
+        # done_button.click()
+        # self.logger.debug("Published the video with video_id = {}".format(video_id))
+        # time.sleep(Constant.USER_WAITING_TIME)
         self.browser.get(Constant.YOUTUBE_URL)
         self.__quit()
         return True, video_id
