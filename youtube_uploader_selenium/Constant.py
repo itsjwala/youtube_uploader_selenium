@@ -6,6 +6,8 @@ class Constant:
     GOOGLE_SIGNIN_CARD_EMAIL_NEXT = '//*[@id="identifierNext"]/div/button'
     GOOGLE_SIGNIN_CARD_PASSWORD = '//*[@id="password"]/div[1]/div/div[1]/input'
     GOOGLE_SIGNIN_CARD_PASSWORD_NEXT = '//*[@id="passwordNext"]/div/button'
+    YOUTUBE_CHANNEL_AVATAR_BUTTON = '//*[@id="avatar-btn"]'
+    GOOGLE_SIGNIN_ACCEPTANCE_TIME = 120
 
     YOUTUBE_URL = 'https://www.youtube.com'
     YOUTUBE_STUDIO_URL = 'https://studio.youtube.com'

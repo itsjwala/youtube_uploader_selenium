@@ -66,12 +66,8 @@ class YouTubeUploader:
             time.sleep(Constant.USER_WAITING_TIME)
             self.browser.refresh()
             time.sleep(Constant.USER_WAITING_TIME)
-            self.logger.debug(self.browser.find(By.XPATH, Constant.YOUTUBE_SIGNIN_BUTTON))
             if not self.browser.find(By.XPATH, Constant.YOUTUBE_SIGNIN_BUTTON):
                 return
-        
-        cookie_path = f"{self.current_working_dir}/youtube.com.json"
-        os.remove(cookie_path) if os.path.exists(cookie_path) else None
 
         self.logger.debug('Couldnt find cookies. attempting login via automation')
         self.logger.debug('Clicking sign in button on top right corner')
@@ -93,8 +89,16 @@ class YouTubeUploader:
         self.logger.debug('Attempting to go all in !')
         self.browser.driver.get_screenshot_as_file('/tmp/ss5')
         self.browser.find(By.XPATH, Constant.GOOGLE_SIGNIN_CARD_PASSWORD_NEXT).click()
-        time.sleep(Constant.USER_WAITING_TIME)
         self.browser.driver.get_screenshot_as_file('/tmp/ss6')
+        self.logger.debug('Attempting to find Channel Avatar button after signin, on top right corner')
+        current_ticker = 0 
+        while current_ticker <= Constant.GOOGLE_SIGNIN_ACCEPTANCE_TIME:
+            if self.browser.find(By.XPATH, Constant.YOUTUBE_CHANNEL_AVATAR_BUTTON):
+                self.logger.debug('Found it! saving youtube cookies...')
+                break
+            self.logger.debug('Sleeping...')
+            time.sleep(1)
+            current_ticker+=1
         self.browser.save_cookies()
 
     def __write_in_field(self, field, string, select_all=False):
@@ -121,22 +125,22 @@ class YouTubeUploader:
             self.browser.driver.execute_script(change_display)
             self.logger.debug('Attached thumbnail {}'.format(self.thumbnail_path))
 
-        title_field = self.browser.find(By.ID, Constant.TEXTBOX, timeout=10)
-        self.__write_in_field(title_field, self.metadata_dict[Constant.VIDEO_TITLE], select_all=True)
-        self.logger.debug('The video title was set to \"{}\"'.format(self.metadata_dict[Constant.VIDEO_TITLE]))
+        # title_field = self.browser.find(By.ID, Constant.TEXTBOX, timeout=10)
+        # self.__write_in_field(title_field, self.metadata_dict[Constant.VIDEO_TITLE], select_all=True)
+        # self.logger.debug('The video title was set to \"{}\"'.format(self.metadata_dict[Constant.VIDEO_TITLE]))
 
-        video_description = self.metadata_dict[Constant.VIDEO_DESCRIPTION]
-        if video_description:
-            description_container = self.browser.find(By.XPATH,
-                                                      Constant.DESCRIPTION_CONTAINER)
-            description_field = self.browser.find(By.ID, Constant.TEXTBOX, element=description_container)
-            self.__write_in_field(description_field, self.metadata_dict[Constant.VIDEO_DESCRIPTION])
-            self.logger.debug(
-                'The video description was set to \"{}\"'.format(self.metadata_dict[Constant.VIDEO_DESCRIPTION]))
+        # video_description = self.metadata_dict[Constant.VIDEO_DESCRIPTION]
+        # if video_description:
+        #     description_container = self.browser.find(By.XPATH,
+        #                                               Constant.DESCRIPTION_CONTAINER)
+        #     description_field = self.browser.find(By.ID, Constant.TEXTBOX, element=description_container)
+        #     self.__write_in_field(description_field, self.metadata_dict[Constant.VIDEO_DESCRIPTION])
+        #     self.logger.debug(
+        #         'The video description was set to \"{}\"'.format(self.metadata_dict[Constant.VIDEO_DESCRIPTION]))
 
-        kids_section = self.browser.find(By.NAME, Constant.NOT_MADE_FOR_KIDS_LABEL)
-        self.browser.find(By.ID, Constant.RADIO_LABEL, kids_section).click()
-        self.logger.debug('Selected \"{}\"'.format(Constant.NOT_MADE_FOR_KIDS_LABEL))
+        # kids_section = self.browser.find(By.NAME, Constant.NOT_MADE_FOR_KIDS_LABEL)
+        # self.browser.find(By.ID, Constant.RADIO_LABEL, kids_section).click()
+        # self.logger.debug('Selected \"{}\"'.format(Constant.NOT_MADE_FOR_KIDS_LABEL))
 
         # Advanced options
 
@@ -170,7 +174,6 @@ class YouTubeUploader:
                 time.sleep(Constant.USER_WAITING_TIME)
             else:
                 break
-        
         self.logger.debug('Video uploaded with video_id = {}'.format(video_id))
 
         # done_button = self.browser.find(By.ID, Constant.DONE_BUTTON)
