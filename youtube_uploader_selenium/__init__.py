@@ -120,9 +120,11 @@ class YouTubeUploader:
 
         if self.thumbnail_path is not None:
             absolute_thumbnail_path = str(Path.cwd() / self.thumbnail_path)
+            time.sleep(Constant.USER_WAITING_TIME_LONG)
             self.browser.find(By.XPATH, Constant.INPUT_FILE_THUMBNAIL).send_keys(absolute_thumbnail_path)
             change_display = "document.getElementById('file-loader').style = 'display: block! important'"
             self.browser.driver.execute_script(change_display)
+            time.sleep(Constant.USER_WAITING_TIME_LONG)
             self.logger.debug('Attached thumbnail {}'.format(self.thumbnail_path))
 
         # title_field = self.browser.find(By.ID, Constant.TEXTBOX, timeout=10)
